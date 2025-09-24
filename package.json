@@ -1,0 +1,17 @@
+{
+  "name": "noctes.jsx-router",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "SPA Router for Noctes.jsx",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/benjamin-larsen/noctes.jsx-router.git"
+  },
+  "author": "Benjamin Larsen",
+  "license": "AGPL-3.0",
+  "bugs": {
+    "url": "https://github.com/benjamin-larsen/noctes.jsx-router/issues"
+  },
+  "homepage": "https://github.com/benjamin-larsen/noctes.jsx-router#readme"
+}
