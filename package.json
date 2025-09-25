@@ -15,6 +15,6 @@
   },
   "homepage": "https://github.com/benjamin-larsen/noctes.jsx-router#readme",
   "peerDependencies": {
-    "noctes.jsx": ">=0.2.0"
+    "noctes.jsx": ">=1.0.0"
   }
 }
