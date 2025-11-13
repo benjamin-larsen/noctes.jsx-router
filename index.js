@@ -164,6 +164,8 @@ class HashRouter extends Router {
 
     this._refreshRoute();
     window.addEventListener("hashchange", HashRouter.prototype._refreshRoute.bind(this));
+
+    this.hrefPrefix = "#";
   }
   
   navigate(newPath) {
