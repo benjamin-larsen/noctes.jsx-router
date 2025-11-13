@@ -74,17 +74,32 @@ function comparePath(path, target) {
   };
 }
 
+function hasRouteNaive(path, routes) {
+  if (!routes) return false;
+
+  for (const route of routes) {
+    const pathData = comparePath(route.path, path);
+    if (!pathData) continue;
+    
+    return true;
+  }
+
+  return false;
+}
+
 function matchRoute(path, routes) {
   for (const route of routes) {
     const pathData = comparePath(route.path, path);
     if (!pathData) continue;
 
     const isRoot = !!route.component || !!route.redirect;
+
+    const subPath = path.slice(route.path.length);
     
-    if ((path.length > route.path.length && !pathData.wildcard) || !isRoot) {
+    if ((path.length > route.path.length && !pathData.wildcard) || !isRoot || hasRouteNaive(subPath, route.children)) {
       if (!route.children) continue;
 
-      const matchedChildRoute = matchRoute(path.slice(route.path.length), route.children);
+      const matchedChildRoute = matchRoute(subPath, route.children);
       if (!matchedChildRoute) continue;
 
       return {
