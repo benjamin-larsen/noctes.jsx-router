@@ -1,5 +1,11 @@
-import { createComponent, createElement } from "noctes.jsx";
+import { createComponent } from "noctes.jsx";
 import { VIEW_DEPTH } from "./constants.js";
+
+function ensureArray(obj) {
+  if (Array.isArray(obj)) return obj;
+
+  return [obj];
+}
 
 export default {
   render(ctx, props, slots) {
@@ -11,14 +17,14 @@ export default {
 
     if (!matchedRoute || !matchedRoute.component) return [null];
 
+    let component = null;
+
     if (typeof matchedRoute.component === 'function') {
-      return [
-        createComponent("Lazy", { ...props, loadFunc: matchedRoute.component, fallback: matchedRoute.fallback || router.fallback })
-      ]
+      component = createComponent("Lazy", { ...props, loadFunc: matchedRoute.component, fallback: matchedRoute.fallback || router.fallback })
     } else {
-      return [
-        createComponent(matchedRoute.component, props, slots)
-      ]
+      component = createComponent(matchedRoute.component, props, slots)
     }
+
+    return slots.default ? ensureArray(slots.default(component)) : [component];
   }
 }

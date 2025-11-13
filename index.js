@@ -1,7 +1,8 @@
 import { shallowRef, globalProperties, isComponent, withoutTracking } from "noctes.jsx"
 import RouterView from "./RouterView.js"
+import RouterLink from "./RouterLink.js";
 
-export { RouterView }
+export { RouterView, RouterLink }
 
 function transformPath(path, hasChildren) {
   const arr = [];
@@ -184,8 +185,6 @@ class HashRouter extends Router {
 
 export default function useRouter(ctx, config = {}) {
   const router = new (config.hash ? HashRouter : WebRouter)(config.fallback, config.routes);
-
-  window.router = router;
 
   globalProperties.$router = router;
 }
