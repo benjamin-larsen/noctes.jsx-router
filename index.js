@@ -120,10 +120,10 @@ function matchRoute(path, routes) {
 }
 
 class Router {
-  constructor(fallback, routes) {
+  constructor(fallback, routes, processRouteHooks = []) {
     if (fallback && !isComponent(fallback)) throw Error("Fallback must be a Component.");
 
-    this.processRouteHooks = [];
+    this.processRouteHooks = processRouteHooks;
 
     this.path = shallowRef(null);
     this.queryParams = shallowRef(null);
@@ -235,7 +235,7 @@ class HashRouter extends Router {
 }
 
 export default function useRouter(ctx, config = {}) {
-  const router = new (config.hash ? HashRouter : WebRouter)(config.fallback, config.routes);
+  const router = new (config.hash ? HashRouter : WebRouter)(config.fallback, config.routes, Array.isArray(config.processRoute) ? config.processRoute : typeof config.processRoute === 'function' ? [ config.processRoute ] : []);
 
   globalProperties.$router = router;
 }
