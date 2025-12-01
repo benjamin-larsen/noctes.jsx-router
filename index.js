@@ -1,4 +1,4 @@
-import { shallowRef, globalProperties, isComponent, withoutTracking } from "noctes.jsx"
+import { shallowRef, globalProperties, isComponent, withoutTracking, readonly } from "noctes.jsx"
 import RouterView from "./RouterView.js"
 import RouterLink from "./RouterLink.js";
 
@@ -97,17 +97,19 @@ function matchRoute(path, routes) {
     const subPath = path.slice(route.path.length);
     
     if ((path.length > route.path.length && !pathData.wildcard) || !isRoot || hasRouteNaive(subPath, route.children)) {
-      if (!route.children) continue;
+      if (!route.children || route.children.length === 0) continue;
 
       const matchedChildRoute = matchRoute(subPath, route.children);
       if (!matchedChildRoute) continue;
 
       return {
+        meta: route.meta ? { ...route.meta, ...matchedChildRoute.meta } : matchedChildRoute.meta,
         params: { ...pathData.params, ...matchedChildRoute.params },
         routes: isRoot ? [route, ...matchedChildRoute.routes] : matchedChildRoute.routes
       }
     } else {
       return {
+        meta: route.meta || {},
         params: pathData.params,
         routes: [ route ]
       }
@@ -121,23 +123,55 @@ class Router {
   constructor(fallback, routes) {
     if (fallback && !isComponent(fallback)) throw Error("Fallback must be a Component.");
 
+    this.processRouteHooks = [];
+
     this.path = shallowRef(null);
     this.queryParams = shallowRef(null);
     this.fallback = fallback || null;
     this.currentRoutes = shallowRef([]);
     this.params = shallowRef({});
+    this.meta = shallowRef({});
     
     this._setRoutes(routes);
+  }
+
+  processRoute(fn) {
+    this.processRouteHooks.push(fn);
+  }
+
+  evaluateProcessRouteHooks(from, to) {
+    for (const fn of this.processRouteHooks) {
+      try {
+        var value = fn(from, to);
+
+        if (typeof value === 'string') return value;
+      } catch(e) {
+        console.log("[Noctes.jsx - Router]: Error occured while running Route Hook.")
+      }
+    }
   }
 
   _updateRoute(pathRaw) {
     const path = pathRaw.split("/").filter(x=>x)
     const matched = matchRoute(path, this.routes);
+    let processedRedirect = matched && this.evaluateProcessRouteHooks(
+      readonly({
+        meta: this.meta.value,
+        params: this.params.value,
+        routes: this.currentRoutes.value
+      }),
+      readonly(matched)
+    );
+
+    if (processedRedirect) {
+      return this.navigate(processedRedirect)
+    }
 
     if (matched && matched.routes[0].redirect) {
       return this.navigate(matched.routes[0].redirect)
     }
 
+    this.meta.value = matched ? matched.meta : {};
     this.params.value = matched ? matched.params : {};
     this.currentRoutes.value = matched ? matched.routes : [];
   }
