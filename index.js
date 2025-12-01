@@ -44,7 +44,8 @@ function transformRoute(route, hasRoot) {
     component: route.component || null,
     redirect: route.redirect || null,
     children: route.children ? route.children.map(route => transformRoute(route, isRoot)) : null,
-    fallback: route.fallback || null
+    fallback: route.fallback || null,
+    meta: route.meta || {}
   }
 }
 
