@@ -12,7 +12,7 @@ export default {
 
   render(ctx, props, slots) {
     return [
-      createElement("a", { ...props, to: undefined, href: (ctx.$router.hrefPrefix || "") + props.to, onClick: ctx.methods.route }, slots.default && slots.default() || null)
+      createElement("a", { ...props, ref: props.elRef, elRef: undefined, to: undefined, href: (ctx.$router.hrefPrefix || "") + props.to, onClick: ctx.methods.route }, slots.default && slots.default() || null)
     ]
   }
 }
