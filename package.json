@@ -1,7 +1,7 @@
 {
   "name": "noctes.jsx-router",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "SPA Router for Noctes.jsx",
   "main": "index.js",
   "repository": {
@@ -15,6 +15,6 @@
   },
   "homepage": "https://github.com/benjamin-larsen/noctes.jsx-router#readme",
   "peerDependencies": {
-    "noctes.jsx": ">=1.0.0"
+    "noctes.jsx": ">=1.1.0"
   }
 }
